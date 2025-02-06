@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
+
 const Navbar = () => {
   const { isAuthenticated, isOwner, logout } = useAuth();
 
@@ -21,6 +22,18 @@ const Navbar = () => {
                 className="text-gray-700 hover:text-gray-900"
               >
                 Services
+              </Link>
+              <Link to="/about" className="text-gray-700 hover:text-gray-900">
+                About
+              </Link>
+              <Link
+                to="/Testimonial"
+                className="text-gray-700 hover:text-gray-900"
+              >
+                Testimonial
+              </Link>
+              <Link to="/contact" className="text-gray-700 hover:text-gray-900">
+                Contact
               </Link>
               {isAuthenticated && (
                 <Link
