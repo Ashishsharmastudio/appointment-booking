@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://appointment-booking-6bj1.onrender.com",
     credentials: true,
   })
 );
