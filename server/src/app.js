@@ -19,6 +19,12 @@ app.use(
 
 app.use(express.json());
 
+// Home route for service checking
+app.get("/home", (req, res) => {
+  res.status(200).json({ message: "Service is running successfully!" });
+});
+
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/services", serviceRoutes);
