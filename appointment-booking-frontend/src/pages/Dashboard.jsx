@@ -4,8 +4,10 @@ import api from "../services/api";
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [services, setServices] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showAppointments, setShowAppointments] = useState(false);
   const [editingService, setEditingService] = useState(null);
   const [newService, setNewService] = useState({
     name: "",
@@ -20,17 +22,32 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [statsResponse, servicesResponse] = await Promise.all([
-        api.get("/dashboard/stats"),
-        api.get("/services"),
-      ]);
+      const [statsResponse, servicesResponse, appointmentsResponse] =
+        await Promise.all([
+          api.get("/dashboard/stats"),
+          api.get("/services"),
+          api.get("/appointments/all"),
+        ]);
       setStats(statsResponse.data);
       setServices(servicesResponse.data.services);
+      setAppointments(appointmentsResponse.data.data);
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
       setLoading(false);
     }
+  };
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+    return new Date(dateString).toLocaleDateString("en-US", options);
   };
 
   const handleCreateService = async (e) => {
@@ -92,6 +109,75 @@ const Dashboard = () => {
           <h3 className="text-lg font-semibold mb-2">Total Services</h3>
           <p className="text-3xl font-bold">{services.length}</p>
         </div>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-lg font-semibold mb-2">Total Appointments</h3>
+          <p className="text-3xl font-bold">{appointments.length}</p>
+        </div>
+      </div>
+
+      {/* Appointments Section */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Recent Appointments</h2>
+          <button
+            onClick={() => setShowAppointments(!showAppointments)}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            {showAppointments ? "Hide Appointments" : "Show All Appointments"}
+          </button>
+        </div>
+
+        {showAppointments && (
+          <div className="bg-white rounded-lg shadow">
+            <div className="p-6">
+              {appointments.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  No appointments found
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {appointments.map((appointment) => (
+                    <div
+                      key={appointment._id}
+                      className="border p-4 rounded hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-semibold text-lg">
+                            {formatDate(appointment.date)}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Client: {appointment.user.name}
+                          </p>
+                          {appointment.message && (
+                            <p className="text-sm text-gray-600 mt-1">
+                              Notes: {appointment.message}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">
+                            {appointment.service.name}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Duration: {appointment.service.duration} mins
+                          </p>
+                          <p className="text-lg font-bold text-green-600">
+                            ${appointment.service.price}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600">
+                        <p>Email: {appointment.user.email}</p>
+                        <p>Phone: {appointment.user.phone}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Create Service Form */}

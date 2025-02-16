@@ -49,3 +49,32 @@ exports.updateAppointment = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+// Add this new controller function
+exports.getAllAppointments = async (req, res) => {
+  try {
+    // Check if user is admin/owner
+    if (req.user.role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Admin only.",
+      });
+    }
+
+    const appointments = await Appointment.find()
+      .populate("user", "name email phone")
+      .populate("service", "name price duration")
+      .sort({ date: 1 });
+
+    res.status(200).json({
+      success: true,
+      data: appointments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching appointments",
+      error: error.message,
+    });
+  }
+};
+

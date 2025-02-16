@@ -12,7 +12,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://appointment-booking-seven.vercel.app", // Allow your frontend domain
+    origin: [
+      "http://localhost:3000",
+      "https://appointment-booking-seven.vercel.app",
+    ], // Allow your frontend domain
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
   })
