@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import ServiceForm from "../components/services/ServiceForm";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -9,92 +10,84 @@ const Dashboard = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showAppointments, setShowAppointments] = useState(false);
   const [editingService, setEditingService] = useState(null);
-  const [newService, setNewService] = useState({
-    name: "",
-    description: "",
-    duration: 30,
-    price: 0,
-  });
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const servicesPerPage = 5;
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
+  useEffect(() => {
+    fetchServices();
+  }, [currentPage]);
+
   const fetchDashboardData = async () => {
     try {
-      const [statsResponse, servicesResponse, appointmentsResponse] =
-        await Promise.all([
-          api.get("/dashboard/stats"),
-          api.get("/services"),
-          api.get("/appointments/all"),
-        ]);
-      setStats(statsResponse.data);
-      setServices(servicesResponse.data.services);
-      setAppointments(appointmentsResponse.data.data);
-      setLoading(false);
+      setLoading(true);
+      const [statsResponse, appointmentsResponse] = await Promise.all([
+        api.get("/dashboard/stats"),
+        api.get("/appointments/all"),
+      ]);
+
+      setStats(statsResponse.data || {});
+      setAppointments(appointmentsResponse.data?.data || []);
     } catch (error) {
       console.error("Failed to fetch dashboard data:", error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const formatDate = (dateString) => {
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    return new Date(dateString).toLocaleDateString("en-US", options);
-  };
-
-  const handleCreateService = async (e) => {
-    e.preventDefault();
+  const fetchServices = async () => {
     try {
-      const response = await api.post("/services", newService);
+      setLoading(true);
+      const response = await api.get(
+        `/services?page=${currentPage}&limit=${servicesPerPage}`
+      );
+
       if (response.data.success) {
-        setServices([...services, response.data.data]);
-        setShowCreateForm(false);
-        setNewService({ name: "", description: "", duration: 30, price: 0 });
+        setServices(response.data.data);
+        setTotalPages(response.data.totalPages);
       }
     } catch (error) {
-      console.error("Failed to create service:", error);
+      console.error("Failed to fetch services:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleUpdateService = async (serviceId) => {
-    try {
-      const response = await api.put(`/services/${serviceId}`, editingService);
-      if (response.data.success) {
-        setServices(
-          services.map((service) =>
-            service._id === serviceId ? response.data.data : service
-          )
-        );
-        setEditingService(null);
-      }
-    } catch (error) {
-      console.error("Failed to update service:", error);
-    }
+  const handleServiceSave = async () => {
+    await fetchServices();
+    setShowCreateForm(false);
+    setEditingService(null);
   };
 
   const handleDeleteService = async (serviceId) => {
     try {
       const response = await api.delete(`/services/${serviceId}`);
       if (response.data.success) {
-        setServices(services.filter((service) => service._id !== serviceId));
+        setServices((prevServices) =>
+          prevServices.filter((service) => service._id !== serviceId)
+        );
       }
     } catch (error) {
       console.error("Failed to delete service:", error);
     }
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        <p>Loading...</p>
       </div>
     );
   }
@@ -107,11 +100,11 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Total Services</h3>
-          <p className="text-3xl font-bold">{services.length}</p>
+          <p className="text-3xl font-bold">{stats?.totalServices || 0}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Total Appointments</h3>
-          <p className="text-3xl font-bold">{appointments.length}</p>
+          <p className="text-3xl font-bold">{appointments?.length || 0}</p>
         </div>
       </div>
 
@@ -128,214 +121,128 @@ const Dashboard = () => {
         </div>
 
         {showAppointments && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6">
-              {appointments.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  No appointments found
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {appointments.map((appointment) => (
-                    <div
-                      key={appointment._id}
-                      className="border p-4 rounded hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-lg">
-                            {formatDate(appointment.date)}
-                          </h3>
+          <div className="bg-white rounded-lg shadow p-6">
+            {appointments.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                No appointments found
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {appointments.map((appointment) => (
+                  <div
+                    key={appointment._id}
+                    className="border p-4 rounded hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-semibold text-lg">
+                          {new Date(appointment.date).toLocaleString()}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Client: {appointment?.user?.name || "Unknown"}
+                        </p>
+                        {appointment?.message && (
                           <p className="text-sm text-gray-600 mt-1">
-                            Client: {appointment.user.name}
+                            Notes: {appointment.message}
                           </p>
-                          {appointment.message && (
-                            <p className="text-sm text-gray-600 mt-1">
-                              Notes: {appointment.message}
-                            </p>
-                          )}
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">
-                            {appointment.service.name}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            Duration: {appointment.service.duration} mins
-                          </p>
-                          <p className="text-lg font-bold text-green-600">
-                            ${appointment.service.price}
-                          </p>
-                        </div>
+                        )}
                       </div>
-                      <div className="mt-2 text-sm text-gray-600">
-                        <p>Email: {appointment.user.email}</p>
-                        <p>Phone: {appointment.user.phone}</p>
+                      <div className="text-right">
+                        <p className="font-medium">
+                          {appointment?.service?.name || "Unknown Service"}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Duration: {appointment?.service?.duration || 0} mins
+                        </p>
+                        <p className="text-lg font-bold text-green-600">
+                          ${appointment?.service?.price || 0}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Create Service Form */}
+      {/* Create New Service */}
       <div className="mb-8">
         <button
-          onClick={() => setShowCreateForm(!showCreateForm)}
+          onClick={() => setShowCreateForm(true)}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
         >
-          {showCreateForm ? "Cancel" : "Create New Service"}
+          Create New Service
         </button>
-
-        {showCreateForm && (
-          <form
-            onSubmit={handleCreateService}
-            className="mt-4 bg-white p-6 rounded-lg shadow"
-          >
-            <div className="grid grid-cols-1 gap-4">
-              <input
-                type="text"
-                placeholder="Service Name"
-                value={newService.name}
-                onChange={(e) =>
-                  setNewService({ ...newService, name: e.target.value })
-                }
-                className="border p-2 rounded"
-                required
-              />
-              <textarea
-                placeholder="Description"
-                value={newService.description}
-                onChange={(e) =>
-                  setNewService({ ...newService, description: e.target.value })
-                }
-                className="border p-2 rounded"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Duration (minutes)"
-                value={newService.duration}
-                onChange={(e) =>
-                  setNewService({
-                    ...newService,
-                    duration: parseInt(e.target.value),
-                  })
-                }
-                className="border p-2 rounded"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Price"
-                value={newService.price}
-                onChange={(e) =>
-                  setNewService({
-                    ...newService,
-                    price: parseFloat(e.target.value),
-                  })
-                }
-                className="border p-2 rounded"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Create Service
-              </button>
-            </div>
-          </form>
-        )}
       </div>
 
+      {/* Show Create or Edit Service Form */}
+      {(showCreateForm || editingService) && (
+        <ServiceForm
+          service={editingService}
+          onClose={() => {
+            setShowCreateForm(false);
+            setEditingService(null);
+          }}
+          onSave={handleServiceSave}
+        />
+      )}
+
       {/* Service List */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Service Management</h2>
-          <div className="space-y-4">
-            {services.map((service) => (
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-2xl font-bold mb-6">Service Management</h2>
+        <div className="space-y-4">
+          {services.length > 0 ? (
+            services.map((service) => (
               <div key={service._id} className="border p-4 rounded">
-                {editingService && editingService._id === service._id ? (
-                  <div className="space-y-4">
-                    <input
-                      type="text"
-                      value={editingService.name}
-                      onChange={(e) =>
-                        setEditingService({
-                          ...editingService,
-                          name: e.target.value,
-                        })
-                      }
-                      className="border p-2 rounded w-full"
-                    />
-                    <textarea
-                      value={editingService.description}
-                      onChange={(e) =>
-                        setEditingService({
-                          ...editingService,
-                          description: e.target.value,
-                        })
-                      }
-                      className="border p-2 rounded w-full"
-                    />
-                    <input
-                      type="number"
-                      value={editingService.price}
-                      onChange={(e) =>
-                        setEditingService({
-                          ...editingService,
-                          price: parseFloat(e.target.value),
-                        })
-                      }
-                      className="border p-2 rounded"
-                    />
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleUpdateService(service._id)}
-                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingService(null)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="font-semibold">{service.name}</h3>
+                    <p className="text-gray-600">{service.description}</p>
+                    <p className="text-sm">
+                      Duration: {service.duration} min | Price: ${service.price}
+                    </p>
                   </div>
-                ) : (
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="font-semibold">{service.name}</h3>
-                      <p className="text-gray-600">{service.description}</p>
-                      <p className="text-sm">
-                        Duration: {service.duration}min | Price: $
-                        {service.price}
-                      </p>
-                    </div>
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => setEditingService(service)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteService(service._id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => setEditingService(service)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteService(service._id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
-            ))}
-          </div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No services available</p>
+          )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 mx-2 rounded bg-gray-300 hover:bg-gray-400"
+          >
+            Previous
+          </button>
+          <span className="px-4 py-2">{`Page ${currentPage} of ${totalPages}`}</span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 mx-2 rounded bg-gray-300 hover:bg-gray-400"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

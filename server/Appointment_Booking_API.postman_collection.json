@@ -104,7 +104,55 @@
           }
         },
         {
-          "name": "2.2 Get Service Management",
+          "name": "2.2 Get All Appointments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/appointments/all",
+            "headers": {
+              "Authorization": "Bearer {{ownerToken}}"
+            },
+            "description": "Fetch all appointments (Owner/Admin only)"
+          },
+          "response": [
+            {
+              "name": "Successful Response",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{baseUrl}}/api/appointments/all"
+              },
+              "status": "OK",
+              "code": 200,
+              "body": {
+                "success": true,
+                "data": [
+                  {
+                    "_id": "appointment_id",
+                    "user": {
+                      "_id": "user_id",
+                      "name": "User Name",
+                      "email": "user@email.com",
+                      "phone": "phone_number"
+                    },
+                    "service": {
+                      "_id": "service_id",
+                      "name": "Service Name",
+                      "duration": 30,
+                      "price": 100
+                    },
+                    "date": "2024-03-20T10:00:00.000Z",
+                    "message": "Appointment message",
+                    "fileUrl": "file_url",
+                    "status": "Pending",
+                    "createdAt": "2024-02-01T18:04:48.281Z",
+                    "updatedAt": "2024-02-01T18:23:17.510Z"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2.3 Get Service Management",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/dashboard/services",
@@ -119,20 +167,82 @@
       "name": "3. Services",
       "item": [
         {
+          "name": "NEW: Get Services by Category",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/services/category/Smart Home"
+          }
+        },
+        {
+          "name": "NEW: Get Services by Solution Set",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/services/solution-set/Smart Appliances"
+          }
+        },
+        {
+          "name": "NEW: Get Home Specific Programs",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/services/home-programs"
+          }
+        },
+        {
+          "name": "NEW: Get Smart Appliances",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/services/smart-appliances"
+          }
+        },
+        {
+          "name": "NEW: Get Advanced Systems",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/services/advanced-systems"
+          }
+        },
+        {
+          "name": "NEW: Search Services",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/services/search?q=automation"
+          }
+        },
+        {
+          "name": "NEW: Bulk Update Service Prices",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/services/bulk-update",
+            "headers": { "Authorization": "Bearer {{ownerToken}}" },
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "updates": [
+                  { "serviceId": "service_id_1", "newPrice": 300 },
+                  { "serviceId": "service_id_2", "newPrice": 150 }
+                ]
+              },
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
           "name": "3.1 Create Service (Owner Only)",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/api/services",
-            "headers": {
-              "Authorization": "Bearer {{ownerToken}}"
-            },
+            "headers": { "Authorization": "Bearer {{ownerToken}}" },
             "body": {
               "mode": "raw",
               "raw": {
-                "name": "Software Development",
-                "description": "Professional custom software development service",
-                "duration": 30,
-                "price": 100
+                "name": "Home Energy Optimization",
+                "description": "AI-powered energy consumption monitoring",
+                "duration": 40,
+                "price": 400,
+                "category": "Home-Specific Services",
+                "solutionSet": "Home Optimization",
+                "specificCategory": "Energy Management",
+                "imageUrl": "https://example.com/energy.jpg"
               },
               "options": {
                 "raw": {

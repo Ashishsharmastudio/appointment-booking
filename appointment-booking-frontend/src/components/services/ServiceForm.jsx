@@ -2,19 +2,55 @@ import { useState } from "react";
 import { useApi } from "../../hooks/useApi";
 
 export default function ServiceForm({ service = {}, onClose, onSave }) {
-  const [formData, setFormData] = useState({
-    name: service.name || "",
-    description: service.description || "",
-    duration: service.duration || 30,
-    price: service.price || 0,
-  });
+  const initialState = {
+    name: service?.name || "",
+    description: service?.description || "",
+    duration: service?.duration || 40,
+    price: service?.price || 400,
+    category: service?.category || "",
+    solutionSet: service?.solutionSet || "",
+    specificCategory: service?.specificCategory || "",
+    imageUrl: service?.imageUrl || "",
+  };
 
+  const [formData, setFormData] = useState(initialState);
   const { request, loading } = useApi();
+
+  // **Dropdown Data from the Excel file**
+  const categories = [
+    "1) Health, Safety & Emergency Services",
+    "4) Smart Home and Specific Purpose",
+    "2) Security and Access",
+    "3) Efficiency and Automation",
+    "5) Programs",
+  ];
+
+  const solutionSets = [
+    "Bed Exit Sensors",
+    "Smart Appliances",
+    "Automated Electric Vehicle (EV) Charging Station",
+    "Fall Detection Sensors",
+    "Fire Extinguishers & Suppression",
+    "Motion Senor",
+    "Security Cameras",
+    "Smart Doorbell",
+    "Smart Rodent Trap",
+    "Smoke and Carbon Monoxide Detectors",
+  ]; // **Truncated for brevity**
+
+  const specificCategories = [
+    "Smart Appliances - Electric Kettles",
+    "Smart Appliances - Smart Air Fryers",
+    "Smart Appliances - Smart Air Purifiers",
+    "Smart Appliances - Smart Blenders",
+    "Smart Appliances - Smart Coffee Makers",
+    "Smart Appliances - Smart Cooktops",
+  ]; // **Truncated for brevity**
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (service._id) {
+      if (service?._id) {
         await request("put", `/services/${service._id}`, formData);
       } else {
         await request("post", "/services", formData);
@@ -30,11 +66,14 @@ export default function ServiceForm({ service = {}, onClose, onSave }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-8 max-w-md w-full">
         <h2 className="text-2xl font-bold mb-6">
-          {service._id ? "Edit Service" : "Add New Service"}
+          {service?._id ? "Edit Service" : "Add New Service"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Service Name */}
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label className="block text-sm font-medium mb-1">
+              Service Name
+            </label>
             <input
               type="text"
               value={formData.name}
@@ -45,6 +84,8 @@ export default function ServiceForm({ service = {}, onClose, onSave }) {
               required
             />
           </div>
+
+          {/* Description */}
           <div>
             <label className="block text-sm font-medium mb-1">
               Description
@@ -59,6 +100,8 @@ export default function ServiceForm({ service = {}, onClose, onSave }) {
               required
             />
           </div>
+
+          {/* Duration & Price */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -74,8 +117,6 @@ export default function ServiceForm({ service = {}, onClose, onSave }) {
                   })
                 }
                 className="w-full p-2 border rounded"
-                min="15"
-                step="15"
                 required
               />
             </div>
@@ -99,6 +140,91 @@ export default function ServiceForm({ service = {}, onClose, onSave }) {
               />
             </div>
           </div>
+
+          {/* Category Selection */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Category</label>
+            <select
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              {categories.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Solution Set Selection */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Solution Set
+            </label>
+            <select
+              value={formData.solutionSet}
+              onChange={(e) =>
+                setFormData({ ...formData, solutionSet: e.target.value })
+              }
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="" disabled>
+                Select a solution set
+              </option>
+              {solutionSets.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Specific Category Selection */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Specific Category
+            </label>
+            <select
+              value={formData.specificCategory}
+              onChange={(e) =>
+                setFormData({ ...formData, specificCategory: e.target.value })
+              }
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="" disabled>
+                Select a specific category
+              </option>
+              {specificCategories.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Image URL */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Image URL</label>
+            <input
+              type="text"
+              value={formData.imageUrl}
+              onChange={(e) =>
+                setFormData({ ...formData, imageUrl: e.target.value })
+              }
+              className="w-full p-2 border rounded"
+            />
+          </div>
+
+          {/* Form Actions */}
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"

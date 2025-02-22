@@ -9,7 +9,7 @@ export default function Home() {
         className="text-white py-20 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage:
-            "url('https://plus.unsplash.com/premium_photo-1738408551920-b71c8b78c4ec?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+            "url('https://plus.unsplash.com/premium_photo-1738408551920-b71c8b78c4ec?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')",
         }}
       >
         <div className="container mx-auto px-6 sm:px-8 md:px-12 lg:px-16 text-center max-w-4xl">
@@ -40,7 +40,6 @@ export default function Home() {
             Why Choose Us?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
             <div className="text-center bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg sm:text-xl font-semibold mb-3">
                 Easy Booking
@@ -49,7 +48,6 @@ export default function Home() {
                 Book appointments with just a few clicks.
               </p>
             </div>
-            {/* Feature 2 */}
             <div className="text-center bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg sm:text-xl font-semibold mb-3">
                 Professional Service
@@ -58,7 +56,6 @@ export default function Home() {
                 Experienced professionals at your service.
               </p>
             </div>
-            {/* Feature 3 */}
             <div className="text-center bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-lg sm:text-xl font-semibold mb-3">
                 Flexible Schedule

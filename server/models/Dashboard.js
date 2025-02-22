@@ -8,21 +8,17 @@ const dashboardSchema = new mongoose.Schema(
       required: true,
     },
     statistics: {
-      totalAppointments: {
-        type: Number,
-        default: 0,
+      totalAppointments: { type: Number, default: 0 },
+      totalServices: { type: Number, default: 0 },
+      totalRevenue: { type: Number, default: 0 },
+      activeServices: { type: Number, default: 0 },
+      categoryBreakdown: {
+        type: Map,
+        of: Number, // Stores count of services per category
       },
-      totalServices: {
-        type: Number,
-        default: 0,
-      },
-      totalRevenue: {
-        type: Number,
-        default: 0,
-      },
-      activeServices: {
-        type: Number,
-        default: 0,
+      solutionSetBreakdown: {
+        type: Map,
+        of: Number, // Stores count of services per solution set
       },
     },
     recentActivities: [
@@ -45,14 +41,8 @@ const dashboardSchema = new mongoose.Schema(
       },
     ],
     settings: {
-      notificationsEnabled: {
-        type: Boolean,
-        default: true,
-      },
-      displayCurrency: {
-        type: String,
-        default: "USD",
-      },
+      notificationsEnabled: { type: Boolean, default: true },
+      displayCurrency: { type: String, default: "USD" },
       businessHours: {
         start: String,
         end: String,
