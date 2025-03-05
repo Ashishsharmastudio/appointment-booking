@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://appointment-booking-pi.vercel.app/",
+      "https://appointment-booking-pi.vercel.app",
     ], // Allow your frontend domain
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     allowedHeaders: "Content-Type,Authorization",
