@@ -1,236 +1,284 @@
-export default function PageFourAboutUs() {
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import WhyChooseUsSlider from '../components/common/WhyChooseUsSlider';
+
+const About = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentWhyChooseSlide, setCurrentWhyChooseSlide] = useState(0);
+
+  const slides = [
+    {
+      image: "/images/smart-home-1.jpg",
+      alt: "Modern smart home automation",
+      caption: "Transform your living space with smart automation"
+    },
+    {
+      image: "/images/smart-home-2.jpg",
+      alt: "Home security system",
+      caption: "Advanced security for peace of mind"
+    },
+    {
+      image: "/images/smart-home-3.jpg",
+      alt: "Smart home controls",
+      caption: "Intuitive control at your fingertips"
+    }
+  ];
+
+  // Auto-advance slides
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+  };
+
+  const principles = [
+    {
+      title: "Simplicity",
+      description: "Designing intuitive systems that eliminate hassle and make life easier."
+    },
+    {
+      title: "Efficiency",
+      description: "Helping you reclaim time by automating the mundane, so you can focus on what matters."
+    },
+    {
+      title: "Empowerment",
+      description: "Giving you complete control over your home with seamless, personalized automation."
+    }
+  ];
+
+  const leadershipTeam = [
+    {
+      name: "John Smith",
+      position: "Chief Executive Officer",
+      image: "/images/leader-1.jpg",
+      description: "20+ years of experience in home automation"
+    },
+    {
+      name: "Sarah Johnson",
+      position: "Chief Technology Officer",
+      image: "/images/leader-2.jpg",
+      description: "Expert in smart home integration"
+    },
+    {
+      name: "Michael Chen",
+      position: "Head of Design",
+      image: "/images/leader-3.jpg",
+      description: "Innovative design solutions specialist"
+    },
+    {
+      name: "Emily Brown",
+      position: "Customer Success Director",
+      image: "/images/leader-4.jpg",
+      description: "Dedicated to exceptional service delivery"
+    }
+  ];
+
+  const whyChooseUs = [
+    {
+      title: "Personalized & Scalable Designs",
+      description: "From single-room makeovers to full-home transformations, we adapt to your needs."
+    },
+    {
+      title: "Seamless Virtual & In-Person Consultation",
+      description: "Connect with our designers from anywhere through advanced digital tools."
+    },
+    {
+      title: "Efficient Project Planning & Execution",
+      description: "We streamline the design process with technology, ensuring a smooth and hassle-free experience."
+    }
+  ];
+
+  const nextWhyChooseSlide = () => {
+    setCurrentWhyChooseSlide((prev) => (prev + 1) % whyChooseUs.length);
+  };
+
+  const prevWhyChooseSlide = () => {
+    setCurrentWhyChooseSlide((prev) => (prev - 1 + whyChooseUs.length) % whyChooseUs.length);
+  };
+
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-white">
+      {/* Image Slider Section */}
       <section className="relative h-[600px] overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80"
-          alt="Team working together"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-800/90 to-blue-600/90"></div>
-        <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
-          <div className="max-w-4xl">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 animate-fade-in-up">
-              About BookEase
-            </h1>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-8">
-              Redefining appointment scheduling for the modern world
+        <div className="relative h-full">
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <div className="absolute inset-0 bg-black/40 z-10"></div>
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 flex items-center justify-center z-20">
+                <h2 className="text-white text-4xl md:text-5xl font-bold text-center px-4">
+                  {slide.caption}
+                </h2>
+              </div>
+            </div>
+          ))}
+          
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Dot Navigation */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                  index === currentSlide ? 'bg-white scale-110' : 'bg-white/50 hover:bg-white/80'
+                }`}
+              >
+                <span className="sr-only">Slide {index + 1}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Our Mission Section */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold text-center mb-12">Our Mission</h1>
+          <div className="space-y-6 text-lg text-gray-700">
+            <p>
+              Our mission is to simplify everyday life through seamless home automation, giving you more time for what truly matters—living life. By integrating cutting-edge technology with intuitive design, we create smart, efficient, and personalized living experiences—so your home works for you, not the other way around.
+            </p>
+            <p>
+              With a focus on ease, security, and convenience, we empower individuals and families to take control of their space effortlessly, making every interaction smarter, smoother, and stress-free.
             </p>
           </div>
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Mission Statement */}
-        <section className="mb-20">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <img
-              src="https://images.unsplash.com/photo-1573166364902-50b1eb2e9c08?ixlib=rb-1.2.1&auto=format&fit=crop&w=2069&q=80"
-              alt="Planning"
-              className="rounded-xl shadow-xl h-[400px] object-cover"
-            />
-            <div>
-              <h2 className="text-3xl font-semibold mb-6">Our Mission</h2>
-              <p className="text-lg text-gray-600 mb-6">
-                At BookEase, we're revolutionizing the way appointments are
-                made. Our platform bridges the gap between businesses and
-                clients through intuitive scheduling solutions.
-              </p>
-              <ul className="space-y-4">
-                <li className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-blue-600 mr-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-600">
-                    24/7 Appointment Availability
-                  </span>
-                </li>
-                <li className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-blue-600 mr-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-600">Automated Reminders</span>
-                </li>
-                <li className="flex items-center">
-                  <svg
-                    className="w-6 h-6 text-blue-600 mr-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span className="text-gray-600">
-                    Multi-platform Integration
-                  </span>
-                </li>
-              </ul>
+      {/* What Drives Us Section */}
+      <section className="py-16 px-4 md:px-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">What Drives Us?</h2>
+          <div className="space-y-6 text-lg text-gray-700">
+            <p>
+              We are driven by a deep passion for innovation, efficiency, and the power of automation to transform daily life. We believe that technology should work for you—not create more complexity.
+            </p>
+            
+            <h3 className="text-2xl font-semibold mt-8 mb-6">Our commitment is rooted in three key principles:</h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              {principles.map((principle, index) => (
+                <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+                  <h4 className="text-xl font-semibold mb-3">{principle.title}</h4>
+                  <p className="text-gray-600">{principle.description}</p>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-8">
+              We are inspired by the idea that a well-designed smart home is more than just convenience—it's about freedom, security, and balance. Our goal is to create smarter living spaces that enhance comfort, improve well-being, and bring peace of mind to every home we touch.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder's Message Section */}
+      <section className="py-16 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Message from the Owner</h2>
+          <div className="space-y-6 text-lg text-gray-700">
+            <p>
+              We believe that technology should make life simpler, not more complicated. When I first started this journey, I saw how overwhelming and time-consuming managing a home could be—juggling daily tasks, security, energy efficiency, and comfort. I knew there had to be a better way.
+            </p>
+            <p>
+              That's why we created a seamless home automation experience—one that puts you in control while removing the stress of everyday routines. Our mission is to design solutions that fit effortlessly into your life, giving you back your most valuable resource—time.
+            </p>
+            <p>
+              Whether you're a busy professional, a parent managing a household, or simply someone who values ease and efficiency, our team is here to help you create a smarter, more intuitive home.
+            </p>
+            <p>
+              We're not just building technology—we're building a better way to live. And we can't wait to bring that vision to your home.
+            </p>
+            <div className="mt-8">
+              <p className="font-semibold">[Owner's Name]</p>
+              <p>Founder & CEO, [Your Company Name]</p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Key Features */}
-        <section className="mb-20">
-          <h2 className="text-3xl font-semibold mb-10 text-center">
-            Why Choose Us
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Instant Scheduling",
-                description: "24/7 booking access with real-time availability",
-                icon: "⏱️",
-                bg: "bg-blue-100",
-              },
-              {
-                title: "Smart Reminders",
-                description: "Automated notifications reduce no-shows",
-                icon: "📲",
-                bg: "bg-green-100",
-              },
-              {
-                title: "Secure Platform",
-                description: "Bank-grade security for all your data",
-                icon: "🔒",
-                bg: "bg-purple-100",
-              },
-            ].map((feature, index) => (
-              <div
-                key={index}
-                className={`${feature.bg} p-8 rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105`}
-              >
-                <div className="text-5xl mb-6">{feature.icon}</div>
-                <h3 className="text-2xl font-semibold mb-4">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Team Members */}
-        <section className="mb-20">
-          <h2 className="text-3xl font-semibold mb-10 text-center">
-            Leadership Team
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Sarah Johnson",
-                role: "CEO & Founder",
-                image:
-                  "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-              },
-              {
-                name: "Michael Chen",
-                role: "CTO",
-                image:
-                  "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-              },
-              {
-                name: "Emma Wilson",
-                role: "Head of Customer Success",
-                image:
-                  "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-              },
-            ].map((member, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-xl shadow-md text-center hover:shadow-lg transition-shadow duration-300"
-              >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-64 h-64 rounded-full mx-auto mb-6 object-cover border-4 border-white shadow-md"
-                />
-                <h3 className="text-2xl font-semibold mb-2">{member.name}</h3>
-                <p className="text-gray-600 mb-4">{member.role}</p>
-                <div className="flex justify-center space-x-4">
-                  <a href="#" className="text-blue-600 hover:text-blue-800">
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                    </svg>
-                  </a>
-                  <a href="#" className="text-blue-600 hover:text-blue-800">
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2.917 16.083c-2.258 0-4.083-1.825-4.083-4.083s1.825-4.083 4.083-4.083c1.103 0 2.024.402 2.735 1.067l-1.107 1.068c-.304-.292-.834-.63-1.628-.63-1.394 0-2.531 1.155-2.531 2.579 0 1.424 1.138 2.579 2.531 2.579 1.616 0 2.224-1.162 2.316-1.762h-2.316v-1.4h3.855c.036.204.064.408.064.677.001 2.332-1.563 3.988-3.919 3.988zm9.917-3.5h-1.75v1.75h-1.167v-1.75h-1.75v-1.166h1.75v-1.75h1.167v1.75h1.75v1.166z" />
-                    </svg>
-                  </a>
+      {/* Leadership Team Section */}
+      <section className="py-16 px-4 md:px-8 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Our Leadership Team</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {leadershipTeam.map((leader, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
+                <div className="h-64 overflow-hidden">
+                  <img
+                    src={leader.image}
+                    alt={leader.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">{leader.name}</h3>
+                  <p className="text-blue-600 mb-3">{leader.position}</p>
+                  <p className="text-gray-600 text-sm">{leader.description}</p>
                 </div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Stats Section */}
-        <section className="mb-20 bg-blue-600 text-white py-16 rounded-2xl shadow-xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="p-4">
-              <div className="text-4xl font-bold mb-2">50k+</div>
-              <div className="text-sm">Active Users</div>
-            </div>
-            <div className="p-4">
-              <div className="text-4xl font-bold mb-2">150+</div>
-              <div className="text-sm">Partner Businesses</div>
-            </div>
-            <div className="p-4">
-              <div className="text-4xl font-bold mb-2">98%</div>
-              <div className="text-sm">Customer Satisfaction</div>
-            </div>
-            <div className="p-4">
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-sm">Support Availability</div>
-            </div>
-          </div>
-        </section>
+      {/* Why Choose Us Section */}
+      <WhyChooseUsSlider />
 
-        {/* Call to Action */}
-        <section className="text-center bg-gradient-to-r from-blue-600 to-purple-600 py-16 px-4 rounded-2xl shadow-xl">
-          <h2 className="text-3xl font-semibold text-white mb-6">
-            Transform Your Scheduling Experience
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join our growing community of professionals and clients enjoying
-            stress-free appointment management
-          </p>
-          <button className="bg-white text-blue-600 font-semibold py-4 px-12 rounded-full hover:bg-opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg">
-            Start Free Trial
-          </button>
-        </section>
-      </div>
+      {/* Call to Action */}
+      <section className="py-16 px-4 md:px-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-8">Ready to get Started?</h2>
+          <Link
+            to="/contact"
+            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-300"
+          >
+            Book your Free Consultation
+          </Link>
+        </div>
+      </section>
     </div>
   );
-}
+};
+
+export default About;

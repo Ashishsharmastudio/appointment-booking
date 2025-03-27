@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import ServiceList from "../components/services/ServiceList";
+import Chatbot from "../components/chat/Chatbot";
 
 export default function Home() {
   return (
@@ -63,6 +64,8 @@ export default function Home() {
               <p className="text-gray-600">
                 Choose from various available time slots.
               </p>
+              {/* Add Chatbot component */}
+              <Chatbot />
             </div>
           </div>
         </div>

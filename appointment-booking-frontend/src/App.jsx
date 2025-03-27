@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
-import Home from "./pages/Home";
+import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Services from "./pages/Services";
 import About from "./pages/About";
@@ -21,11 +21,11 @@ function App() {
       <Navbar />
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/services" element={<Services />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/Testimonial" element={<Testimonial />} />
+          <Route path="/testimonial" element={<Testimonial />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterChoice />} />
           <Route path="/register/:type" element={<Register />} />

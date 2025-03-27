@@ -1,128 +1,274 @@
-import React from "react";
+import React, { useState } from 'react';
+import { FaFacebookF, FaTwitter, FaInstagram, FaGoogle } from 'react-icons/fa';
 
-const ContactPage = () => {
+const FAQItem = ({ question, answer, isOpen, onClick }) => {
   return (
-    <div className="font-sans">
-      {/* Header Section */}
-      <section
-        className="bg-cover bg-center h-96 flex items-center justify-center"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80')`,
-        }}
+    <div className="mb-4">
+      <button
+        className="w-full bg-[#31b0d5] text-white p-4 flex justify-between items-center rounded-lg hover:bg-[#2b9ec1] transition-colors"
+        onClick={onClick}
       >
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Contact Us</h1>
-          <p className="text-xl text-white">
-            We're here to help you book your next appointment.
-          </p>
+        <span className="text-lg font-medium">{question}</span>
+        <span className="text-2xl">{isOpen ? '−' : '+'}</span>
+      </button>
+      {isOpen && (
+        <div className="p-4 bg-white border border-gray-200 rounded-b-lg">
+          <p className="text-gray-600">{answer}</p>
         </div>
-      </section>
-
-      {/* Contact Form Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Get in Touch</h2>
-          <form className="space-y-6">
-            <div>
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Your Name"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Your Email"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows="4"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Your Message"
-              ></textarea>
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      {/* Contact Information Section */}
-      <section className="bg-gray-100 py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Contact Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Phone</h3>
-              <p className="text-gray-600">+1 (123) 456-7890</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Email</h3>
-              <p className="text-gray-600">info@appointmentbooking.com</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-2">Address</h3>
-              <p className="text-gray-600">
-                123 Booking St, Suite 456, City, Country
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Map Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-8">Our Location</h2>
-          <div className="aspect-w-16 aspect-h-9">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.8354345093747!2d144.9537353153166!3d-37.816279742021665!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf577d6a32f8f1c8e!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1625061234567!5m2!1sen!2sau"
-              className="w-full h-full border-0"
-              allowFullScreen=""
-              loading="lazy"
-            ></iframe>
-          </div>
-        </div>
-      </section>
-
-    
+      )}
     </div>
   );
 };
 
-export default ContactPage;
+const Contact = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    email: '',
+    interestedIn: '',
+    hearAboutUs: '',
+    message: ''
+  });
+
+  const [openFAQ, setOpenFAQ] = useState(null);
+
+  const faqs = [
+    {
+      question: "How can I add Accordion FAQs to my site?",
+      answer: "After activating the plugin, you will see the 'Easy Accordion' menu on your WordPress admin panel. Go to Easy Accordion > and click 'Add New' menu and you will find an Accordion Content input field and Shortcode Generator Settings panel."
+    },
+    {
+      question: "I want to show the accordion on my homepage",
+      answer: "The generator fields are highly customizable. After input accordion content, customize the accordion and publish. And then will see a generated shortcode in the bottom section. You need to insert it into any page or post editor even Gutenberg editor."
+    },
+    {
+      question: "How can I get support if the plugin is not working?",
+      answer: "For including on the template, copy and paste the PHP code into your template file. If you need additional support, please contact our support team."
+    }
+  ];
+
+  const handleFAQClick = (index) => {
+    setOpenFAQ(openFAQ === index ? null : index);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Add your form submission logic here
+    console.log('Form submitted:', formData);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* FAQ Section */}
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h2>
+          <div className="max-w-3xl mx-auto">
+            {faqs.map((faq, index) => (
+              <FAQItem
+                key={index}
+                question={faq.question}
+                answer={faq.answer}
+                isOpen={openFAQ === index}
+                onClick={() => handleFAQClick(index)}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Contact Information */}
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Contact Us</h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700">Our mailing address is:</h3>
+                <p className="text-gray-600">
+                  152A Charlotte Street,<br />
+                  Peterborough, ON
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-700">Phone:</h3>
+                <p className="text-gray-600">705-742-3221</p>
+              </div>
+              
+              {/* Social Media Links */}
+              <div className="pt-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Follow Us</h3>
+                <div className="flex space-x-4">
+                  <a href="https://facebook.com/your-page" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transition-colors">
+                    <FaFacebookF className="w-6 h-6" />
+                  </a>
+                  <a href="https://twitter.com/your-handle" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500 transition-colors">
+                    <FaTwitter className="w-6 h-6" />
+                  </a>
+                  <a href="https://instagram.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:text-pink-700 transition-colors">
+                    <FaInstagram className="w-6 h-6" />
+                  </a>
+                  <a href="mailto:your-email@example.com" className="text-red-500 hover:text-red-600 transition-colors">
+                    <FaGoogle className="w-6 h-6" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name *</label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name *</label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    placeholder="+1 (XXX) XXX - XXXX"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="example@mail.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="interestedIn" className="block text-sm font-medium text-gray-700">I am interested in *</label>
+                <select
+                  id="interestedIn"
+                  name="interestedIn"
+                  required
+                  value={formData.interestedIn}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  <option value="">Select Service</option>
+                  <option value="smart-home">Smart Home Installation</option>
+                  <option value="security">Security Systems</option>
+                  <option value="automation">Home Automation</option>
+                  <option value="consultation">Consultation</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="hearAboutUs" className="block text-sm font-medium text-gray-700">How did you hear about us?</label>
+                <input
+                  type="text"
+                  id="hearAboutUs"
+                  name="hearAboutUs"
+                  value={formData.hearAboutUs}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700">How can we help you? *</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="marketing"
+                  name="marketing"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="marketing" className="ml-2 block text-sm text-gray-600">
+                  By providing your email address, you accept to receive marketing emails from us. You can unsubscribe from these emails at anytime.
+                </label>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Map Section */}
+        <div className="mt-16">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Our Location</h2>
+          <div className="w-full h-[400px] rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2851.3889725466395!2d-78.31931812346055!3d44.30338077107615!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d58cce1f76e75d%3A0x1e0227845b9426!2s152A%20Charlotte%20St%2C%20Peterborough%2C%20ON%20K9J%202T8%2C%20Canada!5e0!3m2!1sen!2s!4v1711522419054!5m2!1sen!2s"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Our Location"
+              className="rounded-lg"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Contact;
