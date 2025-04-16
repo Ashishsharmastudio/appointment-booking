@@ -1,6 +1,8 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "appointment-booking",
+  "name": "appointment-booking-system",
+  "description": "A web application for booking appointments with a user-friendly interface and secure authentication.",
+  "version": "1.0.0",
   "icons": [
     {
       "src": "favicon.ico",
