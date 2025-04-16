@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import RegisterChoice from "./pages/RegisterChoice";
 import { useAuth } from "./hooks/useAuth";
 import Testimonial from "./pages/Testimonial";
+import Chatbot from "./components/chat/Chatbot";
 
 function App() {
   const { isAuthenticated, isOwner } = useAuth();
@@ -34,6 +35,7 @@ function App() {
           )}
           {isOwner && <Route path="/dashboard" element={<Dashboard />} />}
         </Routes>
+        <Chatbot />
       </main>
       <Footer />
     </div>
